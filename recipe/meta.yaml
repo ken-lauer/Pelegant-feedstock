@@ -1,0 +1,78 @@
+{% set name = "pelegant" %}
+{% set version = "2023.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: http://localhost:8000/elegant.{{ version }}.tar.gz
+    sha256: 48efea2f34d055807f7ae6b31c1f115ab75730743c1c238873fa9c83e8f48085
+    folder: .
+  - url: http://localhost:8000/SDDS.5.5.tar.gz
+    sha256: c07823e10ba75bea4d6277a2cddf126f366e4ea563fea3967dd8268c7a13be2a
+    folder: .
+  - url: http://localhost:8000/epics.base.configure.tar.gz
+    sha256: d18a5a1dd58ab485df32a55a32f0f2a7517b6a5361439208dc38d2fe69f6e22e
+    folder: .
+  - url: http://localhost:8000/epics.extensions.configure.tar.gz
+    sha256: 46db83bf7e0cc70be663a822e4cb229cb03f52e98e6920fbc1ce181df9eac59b
+    folder: .
+  - url: http://localhost:8000/oag.apps.configure.tar.gz
+    sha256: 1f93900846c634f22b9b7a24641fbd5279d1106aaf5fb637402dc5977dfc2acd
+    folder: .
+
+build:
+  skip: true  # [win]
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler("c") }}
+    - {{ compiler("cxx") }}
+    - mpich
+    - make
+  host:
+    - mpich
+    - fftw=*=mpi_mpich*
+    - gsl
+    - hdf5=1.12.1=mpi_mpich*
+    - libaec  # for libsz
+    - liblapacke  # metapackage for BLAS variant (https://conda-forge.org/docs/maintainer/knowledge_base.html#blas)
+    - libtiff
+    - mpi=*=mpich*
+    - mpich
+    - python=3.10
+    - zlib
+    - zstd
+  run:
+    - mpich
+
+test:
+  commands:
+    - which Pelegant
+    - Pelegant
+
+about:
+  home: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: LICENSE
+  summary: |
+    Pelegant is Parallel Elegant, a parallelized accelerator code that
+    computes beta functions, matrices, orbits, floor coordinates, amplification
+    factors, dynamic aperture, and more
+  description: |
+    elegant is an accelerator code that computes beta functions, matrices,
+    orbits, floor coordinates, amplification factors, dynamic aperture, and
+    more. It does 6-D tracking with matrices and/or canonical integrators, and
+    supports a variety of time-dependent elements. It also does optimization
+    (e.g., matching), including optimization of tracking results. It is the
+    principle accelerator code used at APS.
+  doc_url: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
+  dev_url: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
+
+extra:
+  recipe-maintainers:
+    - ken-lauer
+    - ChristopherMayes
