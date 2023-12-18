@@ -3,7 +3,7 @@ About pelegant-feedstock
 
 Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/pelegant-feedstock/blob/main/LICENSE.txt)
 
-Home: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software#elegant
+Home: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
 
 Package license: GPL-2.0-or-later
 
@@ -12,9 +12,9 @@ computes beta functions, matrices, orbits, floor coordinates, amplification
 factors, dynamic aperture, and more
 
 
-Development: https://github.com/svenreiche/Genesis-1.3-Version4/
+Development: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
 
-Documentation: http://genesis.web.psi.ch/
+Documentation: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
 
 elegant is an accelerator code that computes beta functions, matrices,
 orbits, floor coordinates, amplification factors, dynamic aperture, and
@@ -53,6 +53,13 @@ Current build status
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=&branchName=main">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/pelegant-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_64_" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_arm64</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/pelegant-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_" alt="variant">
                 </a>
               </td>
             </tr>

@@ -22,11 +22,7 @@ liblapacke:
 - 3.9 *netlib
 libtiff:
 - '4.5'
-mpi:
-- mpich
 mpich:
-- '4'
-openmpi:
 - '4'
 target_platform:
 - linux-64
