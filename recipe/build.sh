@@ -16,38 +16,6 @@ cp -a src/epics-extensions/* epics/
 
 rm -rf src/
 
-MAKE_ALL_ARGS=(
-  "HDF_LIB_LOCATION=$PREFIX/lib" 
-  # Now, we don't want to override CFLAGS globally as we'll run into issues.
-  # The best I can tell is we can add our CFLAGS/LDFLAGS on a per-target
-  # basis for some of the troublesome Makefile targets, like hdf2sdds
-  # which looks for a couple fixed places (macports) for libraries like hdf5.
-  "editstring_CFLAGS=-I$PREFIX/include"
-  "editstring_LDFLAGS=-L$PREFIX/lib"
-  "hdf2sdds_CFLAGS=-I$PREFIX/include"
-  "hdf2sdds_LDFLAGS=-L$PREFIX/lib"
-  "sdds2hdf_CFLAGS=-I$PREFIX/include"
-  "sdds2hdf_LDFLAGS=-L$PREFIX/lib"
-  "replaceText_CFLAGS=-I$PREFIX/include"
-  "replaceText_LDFLAGS=-L$PREFIX/lib"
-  "isFileLocked_CFLAGS=-I$PREFIX/include"
-  "isFileLocked_LDFLAGS=-L$PREFIX/lib"
-)
-
-MPI_ARGS=(
-  "MPI=1" 
-  "MPICH_CC=gcc" 
-  "MPICH_CXX=g++" 
-  "MPI_PATH=$(dirname $(which mpicc))/"
-  "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
-  "COMMANDLINE_LIBRARY="
-  "LINKER_USE_RPATH=NO"
-  # "SHARED_LIBRARIES=NO"
-)
-
-echo "* Make args:     ${MAKE_ALL_ARGS[@]}"
-echo "* Make MPI args: ${MAKE_MPI_ARGS[@]}"
-
 if ! command -v mpicc; then
   echo "* mpicc not found? Was the environment built correctly?"
   exit 1
@@ -90,6 +58,37 @@ popd
 EPICS_HOST_ARCH=$("${SRC_DIR}"/epics/base/startup/EpicsHostArch)
 echo "* EPICS_HOST_ARCH=${EPICS_HOST_ARCH}"
 
+MAKE_ALL_ARGS=(
+  "HDF_LIB_LOCATION=$PREFIX/lib" 
+  # Now, we don't want to override CFLAGS globally as we'll run into issues.
+  # The best I can tell is we can add our CFLAGS/LDFLAGS on a per-target
+  # basis for some of the troublesome Makefile targets, like hdf2sdds
+  # which looks for a couple fixed places (macports) for libraries like hdf5.
+  "editstring_CFLAGS=-I$PREFIX/include"
+  "editstring_LDFLAGS=-L$PREFIX/lib"
+  "hdf2sdds_CFLAGS=-I$PREFIX/include"
+  "hdf2sdds_LDFLAGS=-L$PREFIX/lib"
+  "sdds2hdf_CFLAGS=-I$PREFIX/include"
+  "sdds2hdf_LDFLAGS=-L$PREFIX/lib"
+  "replaceText_CFLAGS=-I$PREFIX/include"
+  "replaceText_LDFLAGS=-L$PREFIX/lib"
+  "isFileLocked_CFLAGS=-I$PREFIX/include"
+  "isFileLocked_LDFLAGS=-L$PREFIX/lib"
+)
+
+echo "* Make args:     ${MAKE_ALL_ARGS[@]}"
+MPI_ARGS=(
+  "MPI=1" 
+  "MPICH_CC=gcc" 
+  "MPICH_CXX=g++" 
+  "MPI_PATH=$(dirname $(which mpicc))/"
+  "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
+  "COMMANDLINE_LIBRARY="
+  "LINKER_USE_RPATH=NO"
+  # "SHARED_LIBRARIES=NO"
+)
+
+echo "* Make MPI args: ${MAKE_MPI_ARGS[@]}"
 echo "* Patching SDDS utils"
 # APS may have this patched locally; these were changed long before 1.12.1
 # which they reportedly use:
