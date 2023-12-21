@@ -8,19 +8,19 @@ package:
 source:
   - url: http://localhost:8000/elegant.{{ version }}.tar.gz
     sha256: 48efea2f34d055807f7ae6b31c1f115ab75730743c1c238873fa9c83e8f48085
-    folder: .
-  - url: http://localhost:8000/SDDS.5.5.tar.gz
-    sha256: c07823e10ba75bea4d6277a2cddf126f366e4ea563fea3967dd8268c7a13be2a
-    folder: .
-  - url: http://localhost:8000/epics.base.configure.tar.gz
-    sha256: d18a5a1dd58ab485df32a55a32f0f2a7517b6a5361439208dc38d2fe69f6e22e
-    folder: .
-  - url: http://localhost:8000/epics.extensions.configure.tar.gz
-    sha256: 46db83bf7e0cc70be663a822e4cb229cb03f52e98e6920fbc1ce181df9eac59b
-    folder: .
+    folder: src/elegant
   - url: http://localhost:8000/oag.apps.configure.tar.gz
     sha256: 1f93900846c634f22b9b7a24641fbd5279d1106aaf5fb637402dc5977dfc2acd
-    folder: .
+    folder: src/oag-apps
+  - url: http://localhost:8000/SDDS.5.5.tar.gz
+    sha256: c07823e10ba75bea4d6277a2cddf126f366e4ea563fea3967dd8268c7a13be2a
+    folder: src/sdds
+  - url: http://localhost:8000/epics.base.configure.tar.gz
+    sha256: d18a5a1dd58ab485df32a55a32f0f2a7517b6a5361439208dc38d2fe69f6e22e
+    folder: src/epics-base
+  - url: http://localhost:8000/epics.extensions.configure.tar.gz
+    sha256: 46db83bf7e0cc70be663a822e4cb229cb03f52e98e6920fbc1ce181df9eac59b
+    folder: src/epics-extensions
 
 build:
   skip: true  # [win]
@@ -33,12 +33,11 @@ requirements:
     - mpich
     - make
   host:
-    - mpich
     - fftw=*=mpi_mpich*
     - gsl
     - hdf5=1.12.1=mpi_mpich*
     - libaec  # for libsz
-    - liblapacke  # metapackage for BLAS variant (https://conda-forge.org/docs/maintainer/knowledge_base.html#blas)
+    - liblapacke
     - libtiff
     - mpi=*=mpich*
     - mpich
@@ -52,6 +51,159 @@ test:
   commands:
     - which Pelegant
     - Pelegant
+    # Other supporting applications:
+    - Pelegant
+    - TFS2sdds
+    - applicationBrowse
+    - applicationPatch
+    - applicationSubmit
+    - beamlineDownTime
+    - carriageReturn2newline
+    - checkRequestFile
+    - citi2sdds
+    - clearPatch
+    - col2sdds
+    - convert_to_bdd
+    - csv2sdds
+    - editstring
+    - elegant2genesis
+    - hdf2sdds
+    - hpif2sdds
+    - hpwf2sdds
+    - if2pf
+    - image2sdds
+    - isFileLocked
+    - lba2sdds
+    - mcs2sdds
+    - mecho
+    - minpath
+    - mpl2sdds
+    - nlpp
+    - normalizeFlagData
+    - plaindata2sdds
+    - pvsearch
+    - raw2sdds
+    - replace
+    - replaceText
+    - rpn
+    - rpnl
+    - runAPSStartSROrbitControllaw
+    - sdds2dfft
+    - sdds2dinterpolate
+    - sdds2dpfit
+    - sdds2hdf
+    - sdds2headlessdata
+    - sdds2math
+    - sdds2mpl
+    - sdds2plaindata
+    - sdds2spreadsheet
+    - sdds2stl
+    - sdds2stream
+    - sdds2tiff
+    - sddsDiskUsage
+    - sddsanalyticsignal
+    - sddsarray2column
+    - sddsbaseline
+    - sddsbinarystring
+    - sddsbreak
+    - sddscast
+    - sddschanges
+    - sddscheck
+    - sddscliptails
+    - sddscollapse
+    - sddscollect
+    - sddscombine
+    - sddscombinelogfiles
+    - sddscongen
+    - sddscontour
+    - sddsconvert
+    - sddsconvertlogonchange
+    - sddsconvolve
+    - sddscorrelate
+    - sddsderef
+    - sddsderiv
+    - sddsdiff
+    - sddsdigfilter
+    - sddsdistest
+    - sddsduplicate
+    - sddsendian
+    - sddsenvelope
+    - sddseventhist
+    - sddsexpand
+    - sddsexpfit
+    - sddsfdfilter
+    - sddsfft
+    - sddsfindin2dgrid
+    - sddsgenericfit
+    - sddsgfit
+    - sddshist
+    - sddshist2d
+    - sddsica
+    - sddsimageconvert
+    - sddsimageprofiles
+    - sddsinsideboundaries
+    - sddsinteg
+    - sddsinterp
+    - sddsinterpset
+    - sddslogclient
+    - sddslogserver
+    - sddslorentzianfit
+    - sddsmakedataset
+    - sddsmatrix2column
+    - sddsmatrixmult
+    - sddsmatrixop
+    - sddsminterp
+    - sddsmpfit
+    - sddsmselect
+    - sddsmultihist
+    - sddsmxref
+    - sddsnaff
+    - sddsnormalize
+    - sddsoutlier
+    - sddspeakfind
+    - sddspfit
+    - sddsplot
+    - sddspoly
+    - sddsprintout
+    - sddsprocess
+    - sddspseudoinverse
+    - sddsquery
+    - sddsregroup
+    - sddsremoveoffsets
+    - sddsrespmatrixderivative
+    - sddsrowstats
+    - sddsrunstats
+    - sddssampledist
+    - sddsselect
+    - sddsseparate
+    - sddssequence
+    - sddsshift
+    - sddsshiftcor
+    - sddssinefit
+    - sddsslopes
+    - sddssmooth
+    - sddssnap2grid
+    - sddssort
+    - sddssortcolumn
+    - sddssplit
+    - sddsspotanalysis
+    - sddstdrpeeling
+    - sddstimeconvert
+    - sddstranspose
+    - sddsunwrap
+    - sddsvslopes
+    - sddsxref
+    - sddszerofind
+    - startFirefox
+    - tcomp
+    - tdms2sdds
+    - tek2sdds
+    - testlock
+    - tiff2sdds
+    - timeconvert
+    - tmpname
+    - token
+    - wfm2sdds
 
 about:
   home: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
