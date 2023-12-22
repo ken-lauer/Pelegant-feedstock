@@ -6,19 +6,19 @@ package:
   version: {{ version }}
 
 source:
-  - url: http://localhost:8000/elegant.{{ version }}.tar.gz
+  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/elegant.{{ version }}.tar.gz
     sha256: 48efea2f34d055807f7ae6b31c1f115ab75730743c1c238873fa9c83e8f48085
     folder: src/elegant
-  - url: http://localhost:8000/oag.apps.configure.tar.gz
+  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/oag.apps.configure.tar.gz
     sha256: 1f93900846c634f22b9b7a24641fbd5279d1106aaf5fb637402dc5977dfc2acd
     folder: src/oag-apps
-  - url: http://localhost:8000/SDDS.5.5.tar.gz
+  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/SDDS.5.5.tar.gz
     sha256: c07823e10ba75bea4d6277a2cddf126f366e4ea563fea3967dd8268c7a13be2a
     folder: src/sdds
-  - url: http://localhost:8000/epics.base.configure.tar.gz
+  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/epics.base.configure.tar.gz
     sha256: d18a5a1dd58ab485df32a55a32f0f2a7517b6a5361439208dc38d2fe69f6e22e
     folder: src/epics-base
-  - url: http://localhost:8000/epics.extensions.configure.tar.gz
+  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/epics.extensions.configure.tar.gz
     sha256: 46db83bf7e0cc70be663a822e4cb229cb03f52e98e6920fbc1ce181df9eac59b
     folder: src/epics-extensions
 
@@ -42,14 +42,24 @@ requirements:
     - mpi=*=mpich*
     - mpich
     - python=3.10
+    - readline
     - zlib
     - zstd
   run:
+    - gsl
+    - libaec
+    - liblapacke
+    - mpi=*=mpich*
     - mpich
+    - python=3.10
+    - readline
+    - zlib
+    - zstd
 
 test:
   commands:
     - which Pelegant
+    - ldd $(which Pelegant)
     - Pelegant
     # Other supporting applications:
     - Pelegant
@@ -207,15 +217,14 @@ test:
 
 about:
   home: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
-  license: GPL-2.0-or-later
-  license_family: GPL
-  license_file: LICENSE
+  license: EPICS
+  license_file: oag/apps/src/elegant/LICENSE
   summary: |
     Pelegant is Parallel Elegant, a parallelized accelerator code that
     computes beta functions, matrices, orbits, floor coordinates, amplification
     factors, dynamic aperture, and more
   description: |
-    elegant is an accelerator code that computes beta functions, matrices,
+    Elegant is an accelerator code that computes beta functions, matrices,
     orbits, floor coordinates, amplification factors, dynamic aperture, and
     more. It does 6-D tracking with matrices and/or canonical integrators, and
     supports a variety of time-dependent elements. It also does optimization

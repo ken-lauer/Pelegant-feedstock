@@ -28,6 +28,36 @@ echo "* Patching EPICS_BASE path for oag"
 # shellcheck disable=SC2016
 sed -i -e 's@^#\s*EPICS_BASE.*@EPICS_BASE=$(TOP)/../../epics/base@' "${SRC_DIR}/oag/apps/configure/RELEASE"
 
+EPICS_HOST_ARCH=$("${SRC_DIR}"/epics/base/startup/EpicsHostArch)
+echo "* EPICS_HOST_ARCH=${EPICS_HOST_ARCH}"
+
+MAKE_ALL_ARGS=(
+  "HDF_LIB_LOCATION=$PREFIX/lib" 
+)
+echo "* Make args:     ${MAKE_ALL_ARGS[@]}"
+
+MPI_ARGS=(
+  "MPI=1" 
+  "MPICH_CC=${CC_FOR_BUILD}" 
+  "MPICH_CXX=${CXX_FOR_BUILD}"
+  "MPI_PATH=$(dirname $(which mpicc))/"
+  "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
+  "COMMANDLINE_LIBRARY="
+  "LINKER_USE_RPATH=NO"
+  # "SHARED_LIBRARIES=NO"
+)
+
+echo "* Make MPI args: ${MAKE_MPI_ARGS[@]}"
+echo "* Setting compilers for epics-base"
+
+cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
+CC=${CC_FOR_BUILD}
+CCC=${CXX_FOR_BUILD}
+CXX=${CXX_FOR_BUILD}
+USR_INCLUDES+= -I $PREFIX/include
+LDFLAGS+= -L $PREFIX/lib
+EOF
+
 if [[ $(uname -m) == 'arm64' ]]; then
   echo "* Patching libpng config.h for ARM support"
   # Ensure ARM support is configured or the build will fail
@@ -55,40 +85,6 @@ pushd "${SRC_DIR}/epics/base" || exit
 make
 popd
 
-EPICS_HOST_ARCH=$("${SRC_DIR}"/epics/base/startup/EpicsHostArch)
-echo "* EPICS_HOST_ARCH=${EPICS_HOST_ARCH}"
-
-MAKE_ALL_ARGS=(
-  "HDF_LIB_LOCATION=$PREFIX/lib" 
-  # Now, we don't want to override CFLAGS globally as we'll run into issues.
-  # The best I can tell is we can add our CFLAGS/LDFLAGS on a per-target
-  # basis for some of the troublesome Makefile targets, like hdf2sdds
-  # which looks for a couple fixed places (macports) for libraries like hdf5.
-  "editstring_CFLAGS=-I$PREFIX/include"
-  "editstring_LDFLAGS=-L$PREFIX/lib"
-  "hdf2sdds_CFLAGS=-I$PREFIX/include"
-  "hdf2sdds_LDFLAGS=-L$PREFIX/lib"
-  "sdds2hdf_CFLAGS=-I$PREFIX/include"
-  "sdds2hdf_LDFLAGS=-L$PREFIX/lib"
-  "replaceText_CFLAGS=-I$PREFIX/include"
-  "replaceText_LDFLAGS=-L$PREFIX/lib"
-  "isFileLocked_CFLAGS=-I$PREFIX/include"
-  "isFileLocked_LDFLAGS=-L$PREFIX/lib"
-)
-
-echo "* Make args:     ${MAKE_ALL_ARGS[@]}"
-MPI_ARGS=(
-  "MPI=1" 
-  "MPICH_CC=gcc" 
-  "MPICH_CXX=g++" 
-  "MPI_PATH=$(dirname $(which mpicc))/"
-  "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
-  "COMMANDLINE_LIBRARY="
-  "LINKER_USE_RPATH=NO"
-  # "SHARED_LIBRARIES=NO"
-)
-
-echo "* Make MPI args: ${MAKE_MPI_ARGS[@]}"
 echo "* Patching SDDS utils"
 # APS may have this patched locally; these were changed long before 1.12.1
 # which they reportedly use:
@@ -154,27 +150,8 @@ make Pelegant \
   USER_MPI_FLAGS="-DUSE_MPI=1 -DSDDS_MPI_IO=1 -I$PREFIX/include"
 popd
 
-echo "* Building elegant tools"
-pushd "${SRC_DIR}/oag/apps/src/elegant/elegantTools" || exit
-make \
-  GSL=1 \
-  gsl_DIR="$PREFIX/lib" \
-  gslcblas_DIR="$PREFIX/lib" \
-  USER_MPI_FLAGS="-DUSE_MPI=1 -DSDDS_MPI_IO=1 -I$PREFIX/include"
-popd
-
 PELEGANT_BINARY="${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/Pelegant"
 echo "* Done"
-
-echo "* Adjusting rpath for $PREFIX/lib"
-for binary in "${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/"* "${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}/"*; do
-  chmod +w "$binary"
-  "${INSTALL_NAME_TOOL}" -add_rpath "$PREFIX/lib" "$binary"
-done
-
-echo "* Trying out the Pelegant binary..."
-ls -la "${PELEGANT_BINARY}"
-"${PELEGANT_BINARY}"
 
 echo "* Installing binaries to $PREFIX"
 cp "${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/"* "${PREFIX}/bin"
