@@ -154,6 +154,15 @@ make Pelegant \
   USER_MPI_FLAGS="-DUSE_MPI=1 -DSDDS_MPI_IO=1 -I$PREFIX/include"
 popd
 
+echo "* Building elegant tools"
+pushd "${SRC_DIR}/oag/apps/src/elegant/elegantTools" || exit
+make \
+  GSL=1 \
+  gsl_DIR="$PREFIX/lib" \
+  gslcblas_DIR="$PREFIX/lib" \
+  USER_MPI_FLAGS="-DUSE_MPI=1 -DSDDS_MPI_IO=1 -I$PREFIX/include"
+popd
+
 PELEGANT_BINARY="${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/Pelegant"
 echo "* Done"
 
