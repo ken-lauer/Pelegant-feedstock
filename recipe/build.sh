@@ -43,7 +43,7 @@ MPI_ARGS=(
   "MPI_PATH=$(dirname $(which mpicc))/"
   "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
   "COMMANDLINE_LIBRARY="
-  "LINKER_USE_RPATH=NO"
+  "LINKER_USE_RPATH=YES"
   # "SHARED_LIBRARIES=NO"
 )
 
@@ -55,6 +55,7 @@ CC=${CC_FOR_BUILD}
 CCC=${CXX_FOR_BUILD}
 CXX=${CXX_FOR_BUILD}
 USR_INCLUDES+= -I $PREFIX/include
+# USR_INCLUDES+= -I $BUILD_PREFIX/include
 LDFLAGS+= -L $PREFIX/lib
 EOF
 
@@ -152,6 +153,10 @@ popd
 
 PELEGANT_BINARY="${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/Pelegant"
 echo "* Done"
+
+echo "* Making binaries writeable so patchelf/install_name_tool will work"
+chmod +w "${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/"*
+chmod +w "${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}/"*
 
 echo "* Installing binaries to $PREFIX"
 cp "${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/"* "${PREFIX}/bin"
