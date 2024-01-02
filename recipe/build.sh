@@ -43,7 +43,6 @@ MPI_ARGS=(
   "MPI_PATH=$(dirname $(which mpicc))/"
   "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
   "COMMANDLINE_LIBRARY="
-  "LINKER_USE_RPATH=YES"
   # "SHARED_LIBRARIES=NO"
 )
 
@@ -54,10 +53,20 @@ cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST
 CC=${CC_FOR_BUILD}
 CCC=${CXX_FOR_BUILD}
 CXX=${CXX_FOR_BUILD}
+
 USR_INCLUDES+= -I $PREFIX/include
-# USR_INCLUDES+= -I $BUILD_PREFIX/include
-LDFLAGS+= -L $PREFIX/lib
+LINKER_USE_RPATH=NO
+LDFLAGS+= -Wl,-rpath,${PREFIX}/lib -L $PREFIX/lib
+# LINKER_ORIGIN_ROOT=$PREFIX
+# INSTALL_LOCATION=$PREFIX
 EOF
+
+if [[ $(uname -s) == 'Linux' ]]; then
+  cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
+LDFLAGS+= -Wl,--disable-new-dtags -Wl,-rpath-link,${PREFIX}/lib
+EOF
+fi
+
 
 if [[ $(uname -m) == 'arm64' ]]; then
   echo "* Patching libpng config.h for ARM support"
