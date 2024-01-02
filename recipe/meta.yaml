@@ -46,7 +46,7 @@ requirements:
     - zlib
     - zstd
   run:
-    - blis
+    - blis  # [linux]
     - fftw=*=mpi_mpich*
     - gsl
     - hdf5=1.12.1=mpi_mpich*
