@@ -46,9 +46,13 @@ requirements:
     - zlib
     - zstd
   run:
+    - blis
+    - fftw=*=mpi_mpich*
     - gsl
-    - libaec
+    - hdf5=1.12.1=mpi_mpich*
+    - libaec  # for libsz
     - liblapacke
+    - libtiff
     - mpi=*=mpich*
     - mpich
     - python=3.10
@@ -61,159 +65,158 @@ test:
     - which Pelegant
     - ldd $(which Pelegant)
     - Pelegant
-    # Other supporting applications:
-    - Pelegant
-    - TFS2sdds
-    - applicationBrowse
-    - applicationPatch
-    - applicationSubmit
-    - beamlineDownTime
-    - carriageReturn2newline
-    - checkRequestFile
-    - citi2sdds
-    - clearPatch
-    - col2sdds
-    - convert_to_bdd
-    - csv2sdds
-    - editstring
-    - elegant2genesis
-    - hdf2sdds
-    - hpif2sdds
-    - hpwf2sdds
-    - if2pf
-    - image2sdds
-    - isFileLocked
-    - lba2sdds
-    - mcs2sdds
-    - mecho
-    - minpath
-    - mpl2sdds
-    - nlpp
-    - normalizeFlagData
-    - plaindata2sdds
-    - pvsearch
-    - raw2sdds
-    - replace
-    - replaceText
-    - rpn
-    - rpnl
-    - runAPSStartSROrbitControllaw
-    - sdds2dfft
-    - sdds2dinterpolate
-    - sdds2dpfit
-    - sdds2hdf
-    - sdds2headlessdata
-    - sdds2math
-    - sdds2mpl
-    - sdds2plaindata
-    - sdds2spreadsheet
-    - sdds2stl
-    - sdds2stream
-    - sdds2tiff
-    - sddsDiskUsage
-    - sddsanalyticsignal
-    - sddsarray2column
-    - sddsbaseline
-    - sddsbinarystring
-    - sddsbreak
-    - sddscast
-    - sddschanges
-    - sddscheck
-    - sddscliptails
-    - sddscollapse
-    - sddscollect
-    - sddscombine
-    - sddscombinelogfiles
-    - sddscongen
-    - sddscontour
-    - sddsconvert
-    - sddsconvertlogonchange
-    - sddsconvolve
-    - sddscorrelate
-    - sddsderef
-    - sddsderiv
-    - sddsdiff
-    - sddsdigfilter
-    - sddsdistest
-    - sddsduplicate
-    - sddsendian
-    - sddsenvelope
-    - sddseventhist
-    - sddsexpand
-    - sddsexpfit
-    - sddsfdfilter
-    - sddsfft
-    - sddsfindin2dgrid
-    - sddsgenericfit
-    - sddsgfit
-    - sddshist
-    - sddshist2d
-    - sddsica
-    - sddsimageconvert
-    - sddsimageprofiles
-    - sddsinsideboundaries
-    - sddsinteg
-    - sddsinterp
-    - sddsinterpset
-    - sddslogclient
-    - sddslogserver
-    - sddslorentzianfit
-    - sddsmakedataset
-    - sddsmatrix2column
-    - sddsmatrixmult
-    - sddsmatrixop
-    - sddsminterp
-    - sddsmpfit
-    - sddsmselect
-    - sddsmultihist
-    - sddsmxref
-    - sddsnaff
-    - sddsnormalize
-    - sddsoutlier
-    - sddspeakfind
-    - sddspfit
-    - sddsplot
-    - sddspoly
-    - sddsprintout
-    - sddsprocess
-    - sddspseudoinverse
-    - sddsquery
-    - sddsregroup
-    - sddsremoveoffsets
-    - sddsrespmatrixderivative
-    - sddsrowstats
-    - sddsrunstats
-    - sddssampledist
-    - sddsselect
-    - sddsseparate
-    - sddssequence
-    - sddsshift
-    - sddsshiftcor
-    - sddssinefit
-    - sddsslopes
-    - sddssmooth
-    - sddssnap2grid
-    - sddssort
-    - sddssortcolumn
-    - sddssplit
-    - sddsspotanalysis
-    - sddstdrpeeling
-    - sddstimeconvert
-    - sddstranspose
-    - sddsunwrap
-    - sddsvslopes
-    - sddsxref
-    - sddszerofind
-    - startFirefox
-    - tcomp
-    - tdms2sdds
-    - tek2sdds
-    - testlock
-    - tiff2sdds
-    - timeconvert
-    - tmpname
-    - token
-    - wfm2sdds
+    # Pelegant supporting applications:
+    - which TFS2sdds
+    - which applicationBrowse
+    - which applicationPatch
+    - which applicationSubmit
+    - which beamlineDownTime
+    - which carriageReturn2newline
+    - which checkRequestFile
+    - which citi2sdds
+    - which clearPatch
+    - which col2sdds
+    - which convert_to_bdd
+    - which csv2sdds
+    - which editstring
+    - which elegant2genesis
+    - which hdf2sdds
+    - which hpif2sdds
+    - which hpwf2sdds
+    - which if2pf
+    - which image2sdds
+    - which isFileLocked
+    - which lba2sdds
+    - which mcs2sdds
+    - which mecho
+    - which minpath
+    - which mpl2sdds
+    - which nlpp
+    - which normalizeFlagData
+    - which plaindata2sdds
+    - which pvsearch
+    - which raw2sdds
+    - which replace
+    - which replaceText
+    - which rpn
+    - which rpnl
+    - which runAPSStartSROrbitControllaw
+    - which sdds2dfft
+    - which sdds2dinterpolate
+    - which sdds2dpfit
+    - which sdds2hdf
+    - which sdds2headlessdata
+    - which sdds2math
+    - which sdds2mpl
+    - which sdds2plaindata
+    - which sdds2spreadsheet
+    - which sdds2stl
+    - which sdds2stream
+    - which sdds2tiff
+    - which sddsDiskUsage
+    - which sddsanalyticsignal
+    - which sddsarray2column
+    - which sddsbaseline
+    - which sddsbinarystring
+    - which sddsbreak
+    - which sddscast
+    - which sddschanges
+    - which sddscheck
+    - which sddscliptails
+    - which sddscollapse
+    - which sddscollect
+    - which sddscombine
+    - which sddscombinelogfiles
+    - which sddscongen
+    - which sddscontour
+    - which sddsconvert
+    - which sddsconvertlogonchange
+    - which sddsconvolve
+    - which sddscorrelate
+    - which sddsderef
+    - which sddsderiv
+    - which sddsdiff
+    - which sddsdigfilter
+    - which sddsdistest
+    - which sddsduplicate
+    - which sddsendian
+    - which sddsenvelope
+    - which sddseventhist
+    - which sddsexpand
+    - which sddsexpfit
+    - which sddsfdfilter
+    - which sddsfft
+    - which sddsfindin2dgrid
+    - which sddsgenericfit
+    - which sddsgfit
+    - which sddshist
+    - which sddshist2d
+    - which sddsica
+    - which sddsimageconvert
+    - which sddsimageprofiles
+    - which sddsinsideboundaries
+    - which sddsinteg
+    - which sddsinterp
+    - which sddsinterpset
+    - which sddslogclient
+    - which sddslogserver
+    - which sddslorentzianfit
+    - which sddsmakedataset
+    - which sddsmatrix2column
+    - which sddsmatrixmult
+    - which sddsmatrixop
+    - which sddsminterp
+    - which sddsmpfit
+    - which sddsmselect
+    - which sddsmultihist
+    - which sddsmxref
+    - which sddsnaff
+    - which sddsnormalize
+    - which sddsoutlier
+    - which sddspeakfind
+    - which sddspfit
+    - which sddsplot
+    - which sddspoly
+    - which sddsprintout
+    - which sddsprocess
+    - which sddspseudoinverse
+    - which sddsquery
+    - which sddsregroup
+    - which sddsremoveoffsets
+    - which sddsrespmatrixderivative
+    - which sddsrowstats
+    - which sddsrunstats
+    - which sddssampledist
+    - which sddsselect
+    - which sddsseparate
+    - which sddssequence
+    - which sddsshift
+    - which sddsshiftcor
+    - which sddssinefit
+    - which sddsslopes
+    - which sddssmooth
+    - which sddssnap2grid
+    - which sddssort
+    - which sddssortcolumn
+    - which sddssplit
+    - which sddsspotanalysis
+    - which sddstdrpeeling
+    - which sddstimeconvert
+    - which sddstranspose
+    - which sddsunwrap
+    - which sddsvslopes
+    - which sddsxref
+    - which sddszerofind
+    - which startFirefox
+    - which tcomp
+    - which tdms2sdds
+    - which tek2sdds
+    - which testlock
+    - which tiff2sdds
+    - which timeconvert
+    - which tmpname
+    - which token
+    - which wfm2sdds
 
 about:
   home: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software

@@ -67,7 +67,6 @@ LDFLAGS+= -Wl,--disable-new-dtags -Wl,-rpath-link,${PREFIX}/lib
 EOF
 fi
 
-
 if [[ $(uname -m) == 'arm64' ]]; then
   echo "* Patching libpng config.h for ARM support"
   # Ensure ARM support is configured or the build will fail
