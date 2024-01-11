@@ -6,19 +6,19 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/elegant.{{ version }}.tar.gz
+  - url: https://ops.aps.anl.gov/downloads/elegant.{{ version }}.tar.gz
     sha256: 48efea2f34d055807f7ae6b31c1f115ab75730743c1c238873fa9c83e8f48085
     folder: src/elegant
-  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/oag.apps.configure.tar.gz
+  - url: https://ops.aps.anl.gov/downloads/oag.apps.configure.tar.gz
     sha256: 1f93900846c634f22b9b7a24641fbd5279d1106aaf5fb637402dc5977dfc2acd
     folder: src/oag-apps
-  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/SDDS.5.5.tar.gz
+  - url: https://ops.aps.anl.gov/downloads/SDDS.5.5.tar.gz
     sha256: c07823e10ba75bea4d6277a2cddf126f366e4ea563fea3967dd8268c7a13be2a
     folder: src/sdds
-  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/epics.base.configure.tar.gz
+  - url: https://ops.aps.anl.gov/downloads/epics.base.configure.tar.gz
     sha256: d18a5a1dd58ab485df32a55a32f0f2a7517b6a5361439208dc38d2fe69f6e22e
     folder: src/epics-base
-  - url: https://github.com/ken-lauer/Pelegant-feedstock/releases/download/v0.0.0/epics.extensions.configure.tar.gz
+  - url: https://ops.aps.anl.gov/downloads/epics.extensions.configure.tar.gz
     sha256: 46db83bf7e0cc70be663a822e4cb229cb03f52e98e6920fbc1ce181df9eac59b
     folder: src/epics-extensions
 
