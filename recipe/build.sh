@@ -8,11 +8,11 @@ mkdir epics
 # Archives have overlapping directories. Additionally, conda will remove empty
 # top-level directories which is not what we want.  So here we combine
 # all of the extracted contents into their correct spots:
-cp -a src/elegant/* oag
-cp -a src/oag-apps/* oag
-cp -a src/sdds/* epics/
-cp -a src/epics-base/* epics/
-cp -a src/epics-extensions/* epics/
+cp -r src/elegant/* oag
+cp -r src/oag-apps/* oag
+cp -r src/sdds/* epics/
+cp -r src/epics-base/* epics/
+cp -r src/epics-extensions/* epics/
 
 rm -rf src/
 
@@ -32,33 +32,39 @@ EPICS_HOST_ARCH=$("${SRC_DIR}"/epics/base/startup/EpicsHostArch)
 echo "* EPICS_HOST_ARCH=${EPICS_HOST_ARCH}"
 
 MAKE_ALL_ARGS=(
-  "HDF_LIB_LOCATION=$PREFIX/lib" 
+  "HDF_LIB_LOCATION=$PREFIX/lib"
 )
-echo "* Make args:     ${MAKE_ALL_ARGS[@]}"
-
-MPI_ARGS=(
-  "MPI=1" 
-  "MPICH_CC=${CC_FOR_BUILD}" 
-  "MPICH_CXX=${CXX_FOR_BUILD}"
+MAKE_GSL_ARGS=(
+  "GSL=1"
+  "gsl_DIR=$PREFIX/lib"
+  "gslcblas_DIR=$PREFIX/lib"
+)
+MAKE_MPI_ARGS=(
+  "MPI=1"
   "MPI_PATH=$(dirname $(which mpicc))/"
   "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
-  "COMMANDLINE_LIBRARY="
-  # "SHARED_LIBRARIES=NO"
+  "MPICH_CC=gcc"
+  "MPICH_CXX=g++"
 )
 
+echo "* Make args:         ${MAKE_ALL_ARGS[@]}"
+echo "* Make GSL args:     ${MAKE_GSL_ARGS[@]}"
 echo "* Make MPI args: ${MAKE_MPI_ARGS[@]}"
 echo "* Setting compilers for epics-base"
 
 cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
-CC=${CC_FOR_BUILD}
-CCC=${CXX_FOR_BUILD}
-CXX=${CXX_FOR_BUILD}
+CC=gcc
+CCC=g++
+
+COMMANDLINE_LIBRARY=
+LINKER_USE_RPATH=NO
 
 USR_INCLUDES+= -I $PREFIX/include
-LINKER_USE_RPATH=NO
-LDFLAGS+= -Wl,-rpath,${PREFIX}/lib -L $PREFIX/lib
+LDFLAGS=$LDFLAGS
 # LINKER_ORIGIN_ROOT=$PREFIX
-# INSTALL_LOCATION=$PREFIX
+INSTALL_LOCATION=$PREFIX
+HDF_LIB_LOCATION=$PREFIX/lib
+USER_MPI_FLAGS="-DUSE_MPI=1 -DSDDS_MPI_IO=1 -I${PREFIX}/include"
 EOF
 
 if [[ $(uname -s) == 'Linux' ]]; then
@@ -77,22 +83,15 @@ if [[ $(uname -m) == 'arm64' ]]; then
   # See https://github.com/orgs/Homebrew/discussions/4797
   # This is also a reason why we want our own conda build env...
   sed -i '' \
-    's/final_ldflags="\(.*\),-commons,use_dylibs"/final_ldflags="\1"/' \
+    's/final_ldflags="\(.*\)\s*-Wl,-commons,use_dylibs\(.*\)"/final_ldflags="\1 \2"/' \
     "$(readlink -f "$(which mpicc)")" \
     "$(readlink -f "$(which mpicxx)")"
 else
   echo "* ARM not detected; skipping libpng patch"
 fi
 
-if [ -n "$SDKROOT" ]; then
-  echo "SDKROOT was $SDKROOT but we're unsetting it. MacOS builds will fail otherwise."
-  unset SDKROOT
-fi
-
 echo "* Setting up EPICS build system"
-pushd "${SRC_DIR}/epics/base" || exit
-make
-popd
+make -C "${SRC_DIR}/epics/base"
 
 echo "* Patching SDDS utils"
 # APS may have this patched locally; these were changed long before 1.12.1
@@ -108,58 +107,64 @@ sed -i -e 's/H5Dcreate(/H5Dcreate1(/g' "$SDDS_UTILS/"*.c
 echo -e "all:\ninstall:\nclean:\n" > "${SRC_DIR}/epics/extensions/src/SDDS/SDDSaps/sddsplots/motifDriver/Makefile"
 
 echo "* Building SDDS - LIBONLY"
-pushd "${SRC_DIR}/epics/extensions/src/SDDS" || exit
 # First, build some non-MPI things (otherwise we don't get editstring, nlpp)
-make "${MAKE_ALL_ARGS[@]}" LIBONLY=1
+make -C "${SRC_DIR}/epics/extensions/src/SDDS" "${MAKE_ALL_ARGS[@]}" LIBONLY=1
 
 # Clean out the artifacts from the non-MPI build and then build with MPI:
 echo "* Cleaning non-MPI build"
-make clean
+make -C "${SRC_DIR}/epics/extensions/src/SDDS" clean
 echo "* Building SDDS with MPI"
-make "${MPI_ARGS[@]}" "${MAKE_ALL_ARGS[@]}"
-popd
+make -C "${SRC_DIR}/epics/extensions/src/SDDS" "${MAKE_MPI_ARGS[@]}" "${MAKE_ALL_ARGS[@]}"
 
 echo "* Building SDDS tools"
-pushd "${SRC_DIR}/oag/apps/src/utils/tools" || exit
-make "${MPI_ARGS[@]}"
-popd
+make -C "${SRC_DIR}/oag/apps/src/utils/tools" "${MAKE_MPI_ARGS[@]}"
 
 sed -i -e 's/^epicsShareFuncFDLIBM //g' "${SRC_DIR}/epics/extensions/src/SDDS/include"/*.h
 
-# Build additional SDDS portions not already done:
+# We may not *need* to build these individually. However these are the bare
+# minimum necessary for Pelegant. So let's go with it for now.
 for sdds_part in \
   pgapack    \
   cmatlib    \
 ; do
   echo "* Building SDDS $sdds_part"
-  pushd "${SRC_DIR}/epics/extensions/src/SDDS/${sdds_part}" || exit
-  make "${MPI_ARGS[@]}"
-  popd
+  make -C "${SRC_DIR}/epics/extensions/src/SDDS/${sdds_part}" "${MAKE_MPI_ARGS[@]}"
 done
 
 echo "* Building SDDS python"
-pushd "${SRC_DIR}/epics/extensions/src/SDDS/python" || exit
-make "${MPI_ARGS[@]}" PYTHON=310 PYTHON3=1
-popd
-
-if command -v nlpp; then
-  echo "* nlpp already in PATH: $(which nlpp)"
-else
-  echo "* Adding extension bin directory to PATH for nlpp"
-  export PATH="${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}:$PATH" 
-fi
+make -C "${SRC_DIR}/epics/extensions/src/SDDS/python" \
+  "${MAKE_MPI_ARGS[@]}" \
+  PYTHON3=1 \
+  PYTHON_PREFIX="$PYTHON_PREFIX" \
+  PYTHON_EXEC_PREFIX="$PYTHON_EXEC_PREFIX" \
+  PYTHON_VERSION="$PYTHON_VERSION"
 
 echo "* Building Pelegant"
-pushd "${SRC_DIR}/oag/apps/src/elegant/" || exit
-make Pelegant \
-  "${MPI_ARGS[@]}" \
-  GSL=1 \
-  gsl_DIR="$PREFIX/lib" \
-  gslcblas_DIR="$PREFIX/lib" \
-  USER_MPI_FLAGS="-DUSE_MPI=1 -DSDDS_MPI_IO=1 -I$PREFIX/include"
-popd
 
-PELEGANT_BINARY="${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/Pelegant"
+echo "* Adding extension bin directory to PATH for nlpp"
+export PATH="${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}:$PATH"
+
+make -C "${ELEGANT_ROOT}" \
+  Pelegant \
+  "${MAKE_MPI_ARGS[@]}" \
+  "${MAKE_GSL_ARGS[@]}"
+
+for build_path in \
+  "${SRC_DIR}/oag/apps/src/physics" \
+  "${SRC_DIR}/oag/apps/src/xraylib" \
+  "${ELEGANT_ROOT}/elegantTools" \
+; do
+  echo "* Building $build_path"
+  make -C "$build_path" "${MAKE_ALL_ARGS[@]}" "${MAKE_GSL_ARGS[@]}"
+done
+
+echo "* Building sddsbrightness (Fortran)"
+make -C "${ELEGANT_ROOT}/sddsbrightness" \
+  "${MAKE_ALL_ARGS[@]}" \
+  "${MAKE_GSL_ARGS[@]}" \
+  static_flags="-L$CONDA_PREFIX/lib"
+
+ELEGANT_BINARY="${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/Pelegant"
 echo "* Done"
 
 echo "* Making binaries writeable so patchelf/install_name_tool will work"
