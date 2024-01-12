@@ -30,6 +30,7 @@ requirements:
   build:
     - {{ compiler("c") }}
     - {{ compiler("cxx") }}
+    - {{ compiler("fortran") }}
     - mpich
     - make
   host:
