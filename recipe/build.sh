@@ -108,13 +108,14 @@ echo -e "all:\ninstall:\nclean:\n" > "${SRC_DIR}/epics/extensions/src/SDDS/SDDSa
 
 echo "* Building SDDS - LIBONLY"
 # First, build some non-MPI things (otherwise we don't get editstring, nlpp)
-make -C "${SRC_DIR}/epics/extensions/src/SDDS" "${MAKE_ALL_ARGS[@]}" LIBONLY=1
+cd "${SRC_DIR}/epics/extensions/src/SDDS" || exit
+make "${MAKE_ALL_ARGS[@]}" LIBONLY=1
 
 # Clean out the artifacts from the non-MPI build and then build with MPI:
 echo "* Cleaning non-MPI build"
-make -C "${SRC_DIR}/epics/extensions/src/SDDS" clean
+make clean
 echo "* Building SDDS with MPI"
-make -C "${SRC_DIR}/epics/extensions/src/SDDS" "${MAKE_MPI_ARGS[@]}" "${MAKE_ALL_ARGS[@]}"
+make "${MAKE_MPI_ARGS[@]}" "${MAKE_ALL_ARGS[@]}"
 
 echo "* Building SDDS tools"
 make -C "${SRC_DIR}/oag/apps/src/utils/tools" "${MAKE_MPI_ARGS[@]}"
