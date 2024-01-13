@@ -43,8 +43,8 @@ MAKE_MPI_ARGS=(
   "MPI=1"
   "MPI_PATH=$(dirname $(which mpicc))/"
   "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
-  "MPICH_CC=gcc"
-  "MPICH_CXX=g++"
+  "MPICH_CC=$CC"
+  "MPICH_CXX=$CXX"
 )
 
 echo "* Make args:         ${MAKE_ALL_ARGS[@]}"
@@ -53,8 +53,8 @@ echo "* Make MPI args: ${MAKE_MPI_ARGS[@]}"
 echo "* Setting compilers for epics-base"
 
 cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
-CC=gcc
-CCC=g++
+CC=$CC
+CCC=$CXX
 
 COMMANDLINE_LIBRARY=
 LINKER_USE_RPATH=NO
