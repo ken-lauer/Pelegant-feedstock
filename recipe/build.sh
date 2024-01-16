@@ -106,16 +106,16 @@ sed -i -e 's/H5Dcreate(/H5Dcreate1(/g' "$SDDS_UTILS/"*.c
 # Sorry, we're not going to build the motif driver.
 echo -e "all:\ninstall:\nclean:\n" > "${SRC_DIR}/epics/extensions/src/SDDS/SDDSaps/sddsplots/motifDriver/Makefile"
 
-echo "* Building SDDS - LIBONLY"
+echo "* Building SDDS"
 # First, build some non-MPI things (otherwise we don't get editstring, nlpp)
-cd "${SRC_DIR}/epics/extensions/src/SDDS" || exit
-make "${MAKE_ALL_ARGS[@]}" LIBONLY=1
+make -C "${SRC_DIR}/epics/extensions/src/SDDS" "${MAKE_ALL_ARGS[@]}"
 
 # Clean out the artifacts from the non-MPI build and then build with MPI:
 echo "* Cleaning non-MPI build"
-make clean
-echo "* Building SDDS with MPI"
-make "${MAKE_MPI_ARGS[@]}" "${MAKE_ALL_ARGS[@]}"
+make -C "${SRC_DIR}/epics/extensions/src/SDDS" clean
+
+echo "* Building SDDSlib with MPI"
+make -C "${SRC_DIR}/epics/extensions/src/SDDS/SDDSlib" "${MAKE_MPI_ARGS[@]}" "${MAKE_ALL_ARGS[@]}"
 
 echo "* Building SDDS tools"
 make -C "${SRC_DIR}/oag/apps/src/utils/tools" "${MAKE_MPI_ARGS[@]}"
