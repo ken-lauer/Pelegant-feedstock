@@ -35,6 +35,7 @@ MAKE_ALL_ARGS=(
   "HDF_LIB_LOCATION=$PREFIX/lib"
   "PNG=1"
   "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
+  "SVN_VERSION=$PKG_VERSION"
 )
 MAKE_GSL_ARGS=(
   "GSL=1"
@@ -43,7 +44,7 @@ MAKE_GSL_ARGS=(
 )
 MAKE_MPI_ARGS=(
   "MPI=1"
-  "MPI_PATH=$(dirname $(which mpicc))/"
+  "MPI_PATH=$(dirname "$(which mpicc)")/"
   "MPICH_CC=$CC"
   "MPICH_CXX=$CXX"
 )
@@ -52,9 +53,9 @@ PYTHON_PREFIX=$(python -c "import sys; print(sys.prefix)")
 PYTHON_EXEC_PREFIX=$(python -c "import sys; print(sys.exec_prefix)")
 PYTHON_VERSION=$(python -c "import sys; print(sys.version[:4])")
 
-echo "* Make args:          ${MAKE_ALL_ARGS[@]}"
-echo "* Make GSL args:      ${MAKE_GSL_ARGS[@]}"
-echo "* Make MPI args:      ${MAKE_MPI_ARGS[@]}"
+echo "* Make args:          ${MAKE_ALL_ARGS[*]}"
+echo "* Make GSL args:      ${MAKE_GSL_ARGS[*]}"
+echo "* Make MPI args:      ${MAKE_MPI_ARGS[*]}"
 echo "* Python prefix:      $PYTHON_PREFIX"
 echo "* Python exec prefix: $PYTHON_EXEC_PREFIX"
 echo "* Python version:     $PYTHON_VERSION"
@@ -191,8 +192,7 @@ make -C "${ELEGANT_ROOT}/sddsbrightness" \
   F77="${GFORTRAN} -m64 -ffixed-line-length-132" \
   static_flags="-L$PREFIX/lib"
 
-ELEGANT_BINARY="${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/Pelegant"
-echo "* Done"
+echo "* Build succeeded"
 
 echo "* Making binaries writeable so patchelf/install_name_tool will work"
 chmod +w "${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/"*
