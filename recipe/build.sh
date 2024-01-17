@@ -48,9 +48,17 @@ MAKE_MPI_ARGS=(
   "MPICH_CXX=$CXX"
 )
 
-echo "* Make args:         ${MAKE_ALL_ARGS[@]}"
-echo "* Make GSL args:     ${MAKE_GSL_ARGS[@]}"
-echo "* Make MPI args: ${MAKE_MPI_ARGS[@]}"
+PYTHON_PREFIX=$(python -c "import sys; print(sys.prefix)")
+PYTHON_EXEC_PREFIX=$(python -c "import sys; print(sys.exec_prefix)")
+PYTHON_VERSION=$(python -c "import sys; print(sys.version[:4])")
+
+echo "* Make args:          ${MAKE_ALL_ARGS[@]}"
+echo "* Make GSL args:      ${MAKE_GSL_ARGS[@]}"
+echo "* Make MPI args:      ${MAKE_MPI_ARGS[@]}"
+echo "* Python prefix:      $PYTHON_PREFIX"
+echo "* Python exec prefix: $PYTHON_EXEC_PREFIX"
+echo "* Python version:     $PYTHON_VERSION"
+
 echo "* Setting compilers for epics-base"
 
 cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
