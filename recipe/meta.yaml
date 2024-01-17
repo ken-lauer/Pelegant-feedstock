@@ -34,6 +34,8 @@ requirements:
     - mpich
     - make
   host:
+    - libgomp  # [linux]
+    - openmp  # [linux]
     - fftw=*=mpi_mpich*
     - gsl
     - hdf5=1.12.1=mpi_mpich*
@@ -47,6 +49,8 @@ requirements:
     - zlib
     - zstd
   run:
+    - libgomp  # [linux]
+    - openmp  # [linux]
     - blis  # [linux]
     - fftw=*=mpi_mpich*
     - gsl
