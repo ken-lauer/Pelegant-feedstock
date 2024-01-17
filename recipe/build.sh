@@ -188,7 +188,8 @@ echo "* Building sddsbrightness (Fortran)"
 make -C "${ELEGANT_ROOT}/sddsbrightness" \
   "${MAKE_ALL_ARGS[@]}" \
   "${MAKE_GSL_ARGS[@]}" \
-  static_flags="-L$CONDA_PREFIX/lib"
+  F77="${GFORTRAN} -m64 -ffixed-line-length-132" \
+  static_flags="-L$PREFIX/lib"
 
 ELEGANT_BINARY="${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/Pelegant"
 echo "* Done"
