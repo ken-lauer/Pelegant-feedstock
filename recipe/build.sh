@@ -69,17 +69,23 @@ COMMANDLINE_LIBRARY=
 LINKER_USE_RPATH=NO
 
 USR_INCLUDES+= -I $PREFIX/include
-LDFLAGS=$LDFLAGS
+USR_LDFLAGS=$LDFLAGS
 # LINKER_ORIGIN_ROOT=$PREFIX
-INSTALL_LOCATION=$PREFIX
 HDF_LIB_LOCATION=$PREFIX/lib
 USER_MPI_FLAGS="-DUSE_MPI=1 -DSDDS_MPI_IO=1 -I${PREFIX}/include"
 EOF
 
 if [[ $(uname -s) == 'Linux' ]]; then
   cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
-LDFLAGS+= -Wl,--disable-new-dtags -Wl,-rpath-link,${PREFIX}/lib
+USR_LDFLAGS+= -Wl,--disable-new-dtags -Wl,-rpath-link,${PREFIX}/lib
 EOF
+  # On Linux, ensure libgomp is included during linking:
+  sed -i -e "s/PROD_SYS_LIBS\s*+=.*/\0 gomp/" \
+    "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/Makefile" \
+    "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/sddscontours/Makefile" \
+    "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/pseudoInverse/Makefile"
+  sed -i -e "s/PROD_SYS_LIBS_DEFAULT\s*=.*/\0 gomp/" \
+    "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/sddsplots/Makefile"
 fi
 
 if [[ $(uname -m) == 'arm64' ]]; then
@@ -114,6 +120,7 @@ sed -i -e 's/H5Dcreate(/H5Dcreate1(/g' "$SDDS_UTILS/"*.c
 
 # Sorry, we're not going to build the motif driver.
 echo -e "all:\ninstall:\nclean:\n" > "${SRC_DIR}/epics/extensions/src/SDDS/SDDSaps/sddsplots/motifDriver/Makefile"
+
 
 echo "* Building SDDS"
 # First, build some non-MPI things (otherwise we don't get editstring, nlpp)
@@ -153,6 +160,15 @@ echo "* Building Pelegant"
 
 echo "* Adding extension bin directory to PATH for nlpp"
 export PATH="${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}:$PATH"
+
+ELEGANT_ROOT="${SRC_DIR}/oag/apps/src/elegant/"
+
+if [[ $(uname -s) == 'Linux' ]]; then
+  # Include libgomp for Linux builds for the remainder of the tools
+  cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
+USR_LDFLAGS+= -lgomp
+EOF
+fi
 
 make -C "${ELEGANT_ROOT}" \
   Pelegant \
