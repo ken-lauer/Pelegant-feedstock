@@ -43,6 +43,7 @@ requirements:
   host:
     - blas * *openblas
     - libopenblas
+    - liblapack  # [linux]
     - blis  # [linux]
     - fftw * mpi_mpich_*
     - gsl
@@ -62,6 +63,7 @@ requirements:
     # Note: Listed specifically for the conda-verify linkage checker; this is
     # already included in the metapackage 'blas':
     - libopenblas
+    - liblapack  # [linux]
     # Pelegant itself links to blis on Linux only
     - blis  # [linux]
     - fftw * mpi_mpich_*
