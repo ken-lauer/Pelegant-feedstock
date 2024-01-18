@@ -25,6 +25,12 @@ source:
 build:
   skip: true  # [win]
   number: 0
+  ignore_run_exports:
+    # libsz/libaec used in hdf2sdds/sdds2hdf:
+    - libaec
+    # Darwin-only; linked in sdds2tiff/tiff2sdds
+    - zstd  # [osx]
+
 
 requirements:
   build:
@@ -34,24 +40,22 @@ requirements:
     - mpich
     - make
   host:
-    - blas  # [osx]
+    - blas
     - blis  # [linux]
     - fftw * mpi_mpich_*
     - gsl
     - hdf5 * mpi_mpich_*
-    - libaec  # for libsz
+    - libaec
     - libgomp  # [linux]
-    - liblapacke
-    - libtiff
     - mpi * mpich*
     - mpich
     - openmp  # [linux]
     - python =3.10
-    - readline
-    - zlib
-    - zstd
+    - zstd  # [osx]
   run:
-    - blas  # [osx]
+    # blas for liblapacke
+    - blas
+    # Pelegant itself links to blis on Linux only
     - blis  # [linux]
     - fftw * mpi_mpich_*
     - gsl
@@ -60,17 +64,26 @@ requirements:
     - mpi * mpich*
     - mpich
     - openmp  # [linux]
-    - python =3.10
-    - zlib
 
 test:
+  requires:
+    - python =3.10
   imports:
     - sdds
     - sddsdata
   commands:
     - which Pelegant
-    - ldd $(which Pelegant)  # [linux]
     - Pelegant
+    # These are skipped on macOS at the moment - sddscontour:
+    - which sddscontour  # [linux]
+    - which sddscongen  # [linux]
+    - which sddshist2d  # [linux]
+    - which sddsimageconvert  # [linux]
+    # These are skipped on macOS at the moment - pseudoInverse:
+    - which sdds2dpfit  # [linux]
+    - which sddsica  # [linux]
+    - which sddsmatrixop  # [linux]
+    - which sddspseudoinverse  # [linux]
     # Pelegant supporting applications:
     - which TFS2sdds
     - which applicationBrowse
@@ -109,7 +122,6 @@ test:
     - which runAPSStartSROrbitControllaw
     - which sdds2dfft
     - which sdds2dinterpolate
-    - which sdds2dpfit
     - which sdds2hdf
     - which sdds2headlessdata
     - which sdds2math
@@ -133,8 +145,6 @@ test:
     - which sddscollect
     - which sddscombine
     - which sddscombinelogfiles
-    - which sddscongen
-    - which sddscontour  # [linux]
     - which sddsconvert
     - which sddsconvertlogonchange
     - which sddsconvolve
@@ -156,9 +166,6 @@ test:
     - which sddsgenericfit
     - which sddsgfit
     - which sddshist
-    - which sddshist2d
-    - which sddsica
-    - which sddsimageconvert
     - which sddsimageprofiles
     - which sddsinsideboundaries
     - which sddsinteg
@@ -170,7 +177,6 @@ test:
     - which sddsmakedataset
     - which sddsmatrix2column
     - which sddsmatrixmult
-    - which sddsmatrixop
     - which sddsminterp
     - which sddsmpfit
     - which sddsmselect
@@ -185,7 +191,6 @@ test:
     - which sddspoly
     - which sddsprintout
     - which sddsprocess
-    - which sddspseudoinverse  # [linux]
     - which sddsquery
     - which sddsregroup
     - which sddsremoveoffsets
