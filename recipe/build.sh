@@ -2,9 +2,6 @@
 
 set -ex -o pipefail
 
-# TODO: remove before staged recipes
-exec > >(tee "$HOME/Repos/pelegant/pelegant-feedstock/build.log") 2>&1
-
 mkdir oag
 mkdir epics
 
@@ -39,10 +36,6 @@ MAKE_ALL_ARGS=(
   "PNG=0"
   "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
   "SVN_VERSION=$PKG_VERSION"
-  "LAPACK=1"
-  "CUSTOM_LAPACK=1"
-  "lapack_DIR=$PREFIX"
-  "lapack_INC=$PREFIX/include"
 )
 MAKE_GSL_ARGS=(
   "GSL=1"
