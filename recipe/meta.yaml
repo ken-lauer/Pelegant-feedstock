@@ -51,6 +51,7 @@ requirements:
     - mpich
     - openmp  # [linux]
     - python =3.10
+    - zlib  # [linux]
     - zstd  # [osx]
   run:
     # blas for liblapacke
