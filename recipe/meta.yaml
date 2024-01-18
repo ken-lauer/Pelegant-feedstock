@@ -59,6 +59,7 @@ requirements:
     - zstd  # [osx]
   run:
     - liblapack
+    - liblapacke
     - libopenblas
     # Pelegant itself links to blis on Linux only
     - blis  # [linux]
