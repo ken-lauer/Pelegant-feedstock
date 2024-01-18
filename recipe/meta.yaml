@@ -41,7 +41,7 @@ requirements:
     - mpich
     - make
   host:
-    - liblapack
+    - blas * *openblas
     - libopenblas
     - blis  # [linux]
     - fftw * mpi_mpich_*
@@ -58,8 +58,9 @@ requirements:
     - zlib
     - zstd  # [osx]
   run:
-    - liblapack
-    - liblapacke
+    - blas * *openblas
+    # Note: Listed specifically for the conda-verify linkage checker; this is
+    # already included in the metapackage 'blas':
     - libopenblas
     # Pelegant itself links to blis on Linux only
     - blis  # [linux]
