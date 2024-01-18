@@ -89,15 +89,16 @@ EOF
     "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/sddsplots/Makefile"
 elif [[ $(uname -s) == 'Darwin' ]]; then
   # Skipping pseudoInverse and sddscontours for now on Darwin.
-  # Outside of conda with a modern MacOS SDK, these build without issue.
-  # The older MacOS SDK that conda-forge uses has issues with pseudoInverse
-  # and lapack/blas.
+  # Outside of conda-forge infrastructure with a modern MacOS SDK, these build
+  # without issue. The older MacOS SDK that conda-forge uses has issues with
+  # pseudoInverse and lapack/blas.
   MAKE_ALL_ARGS+=( "BUILD_PSEUDOINVERSE=0" )
   sed -i -e "s#^DIRS += SDDSaps/sddscontours##" \
     "$SRC_DIR/epics/extensions/src/SDDS/Makefile"
   sed -i -e "s/^DIRS =.*/DIRS = sddsplots/" \
     "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/Makefile"
-  # oag inadvertently overwrites USR_CFLAGS
+  # oag overwrites USR_CFLAGS; append to the arch-specific ones here instead
+  # to avoid warnings which have become fatal errors:
   cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
 USR_CFLAGS_Darwin += -Wno-error=incompatible-function-pointer-types
 USR_CXXFLAGS_Darwin += -Wno-error=register
@@ -113,10 +114,14 @@ if [[ $(uname -s) == 'Darwin' && $(uname -m) == 'arm64' ]]; then
   echo "* Patching mpicc and mpicxx for recent macOS Xcode compatibility"
   # See https://github.com/orgs/Homebrew/discussions/4797
   # This is also a reason why we want our own conda build env...
+  echo "* Before patch:"
+  grep -e "final_ldflags=" "$(readlink -f "$(which mpicc)")" "$(readlink -f "$(which mpicxx)")"
   sed -i '' \
     's/final_ldflags="\(.*\)\s*-Wl,-commons,use_dylibs\(.*\)"/final_ldflags="\1 \2"/' \
     "$(readlink -f "$(which mpicc)")" \
     "$(readlink -f "$(which mpicxx)")"
+  echo "* After patch:"
+  grep -e "final_ldflags=" "$(readlink -f "$(which mpicc)")" "$(readlink -f "$(which mpicxx)")"
 else
   echo "* ARM not detected; skipping libpng patch"
 fi
