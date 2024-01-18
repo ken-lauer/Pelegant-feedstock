@@ -5,7 +5,7 @@ Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/pelegant-feedst
 
 Home: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
 
-Package license: GPL-2.0-or-later
+Package license: EPICS
 
 Summary: Pelegant is Parallel Elegant, a parallelized accelerator code that
 computes beta functions, matrices, orbits, floor coordinates, amplification
@@ -16,7 +16,7 @@ Development: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
 
 Documentation: https://www.aps.anl.gov/Accelerator-Operations-Physics/Software
 
-elegant is an accelerator code that computes beta functions, matrices,
+Elegant is an accelerator code that computes beta functions, matrices,
 orbits, floor coordinates, amplification factors, dynamic aperture, and
 more. It does 6-D tracking with matrices and/or canonical integrators, and
 supports a variety of time-dependent elements. It also does optimization
@@ -191,6 +191,5 @@ In order to produce a uniquely identifiable distribution:
 Feedstock Maintainers
 =====================
 
-* [@ChristopherMayes](https://github.com/ChristopherMayes/)
 * [@ken-lauer](https://github.com/ken-lauer/)
 
