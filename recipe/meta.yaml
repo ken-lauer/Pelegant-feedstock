@@ -34,32 +34,35 @@ requirements:
     - mpich
     - make
   host:
-    - libgomp  # [linux]
-    - openmp  # [linux]
-    - fftw=*=mpi_mpich*
-    - gsl
-    - hdf5=1.12.1=mpi_mpich*
-    - libaec  # for libsz
-    - liblapacke
-    - libtiff
-    - mpi=*=mpich*
-    - mpich
-    - python=3.10
-    - readline
-    - zlib
-    - zstd
-  run:
-    - libgomp  # [linux]
-    - openmp  # [linux]
+    - blas  # [osx]
     - blis  # [linux]
     - fftw=*=mpi_mpich*
     - gsl
     - hdf5=1.12.1=mpi_mpich*
     - libaec  # for libsz
+    - libgomp  # [linux]
     - liblapacke
     - libtiff
     - mpi=*=mpich*
     - mpich
+    - openmp  # [linux]
+    - python=3.10
+    - readline
+    - zlib
+    - zstd
+  run:
+    - blas  # [osx]
+    - blis  # [linux]
+    - fftw=*=mpi_mpich*
+    - gsl
+    - hdf5=1.12.1=mpi_mpich*
+    - libaec  # for libsz
+    - libgomp  # [linux]
+    - liblapacke
+    - libtiff
+    - mpi=*=mpich*
+    - mpich
+    - openmp  # [linux]
     - python=3.10
     - readline
     - zlib
@@ -68,7 +71,7 @@ requirements:
 test:
   commands:
     - which Pelegant
-    - ldd $(which Pelegant)
+    - ldd $(which Pelegant)  # [linux]
     - Pelegant
     # Pelegant supporting applications:
     - which TFS2sdds
@@ -133,7 +136,7 @@ test:
     - which sddscombine
     - which sddscombinelogfiles
     - which sddscongen
-    - which sddscontour
+    - which sddscontour  # [linux]
     - which sddsconvert
     - which sddsconvertlogonchange
     - which sddsconvolve
@@ -184,7 +187,7 @@ test:
     - which sddspoly
     - which sddsprintout
     - which sddsprocess
-    - which sddspseudoinverse
+    - which sddspseudoinverse  # [linux]
     - which sddsquery
     - which sddsregroup
     - which sddsremoveoffsets

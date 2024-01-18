@@ -2,6 +2,9 @@
 
 set -ex -o pipefail
 
+# TODO: remove before staged recipes
+exec > >(tee "$HOME/Repos/pelegant/pelegant-feedstock/build.log") 2>&1
+
 mkdir oag
 mkdir epics
 
@@ -36,6 +39,10 @@ MAKE_ALL_ARGS=(
   "PNG=0"
   "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
   "SVN_VERSION=$PKG_VERSION"
+  "LAPACK=1"
+  "CUSTOM_LAPACK=1"
+  "lapack_DIR=$PREFIX"
+  "lapack_INC=$PREFIX/include"
 )
 MAKE_GSL_ARGS=(
   "GSL=1"
@@ -87,9 +94,24 @@ EOF
     "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/pseudoInverse/Makefile"
   sed -i -e "s/PROD_SYS_LIBS_DEFAULT\s*=.*/\0 gomp/" \
     "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/sddsplots/Makefile"
+elif [[ $(uname -s) == 'Darwin' ]]; then
+  # Skipping pseudoInverse and sddscontours for now on Darwin.
+  # Outside of conda with a modern MacOS SDK, these build without issue.
+  # The older MacOS SDK that conda-forge uses has issues with pseudoInverse
+  # and lapack/blas.
+  MAKE_ALL_ARGS+=( "BUILD_PSEUDOINVERSE=0" )
+  sed -i -e "s#^DIRS += SDDSaps/sddscontours##" \
+    "$SRC_DIR/epics/extensions/src/SDDS/Makefile"
+  sed -i -e "s/^DIRS =.*/DIRS = sddsplots/" \
+    "$SRC_DIR/epics/extensions/src/SDDS/SDDSaps/Makefile"
+  # oag inadvertently overwrites USR_CFLAGS
+  cat <<EOF >> "${SRC_DIR}/epics/base/configure/os/CONFIG_SITE.Common.${EPICS_HOST_ARCH}"
+USR_CFLAGS_Darwin += -Wno-error=incompatible-function-pointer-types
+USR_CXXFLAGS_Darwin += -Wno-error=register
+EOF
 fi
 
-if [[ $(uname -m) == 'arm64' ]]; then
+if [[ $(uname -s) == 'Darwin' && $(uname -m) == 'arm64' ]]; then
   echo "* Patching libpng config.h for ARM support"
   # Ensure ARM support is configured or the build will fail
   if grep 'undef PNG_ARM_NEON' epics/extensions/src/SDDS/png/config.h; then
@@ -106,10 +128,6 @@ else
   echo "* ARM not detected; skipping libpng patch"
 fi
 
-echo "* Setting up EPICS build system"
-make -C "${SRC_DIR}/epics/base"
-
-echo "* Patching SDDS utils"
 # APS may have this patched locally; these were changed long before 1.12.1
 # which they reportedly use:
 SDDS_UTILS="${SRC_DIR}/epics/extensions/src/SDDS/utils"
@@ -119,10 +137,15 @@ sed -i -e 's/H5Acreate(/H5Acreate1(/g' "$SDDS_UTILS/"*.c
 sed -i -e 's/H5Gcreate(/H5Gcreate1(/g' "$SDDS_UTILS/"*.c
 sed -i -e 's/H5Dcreate(/H5Dcreate1(/g' "$SDDS_UTILS/"*.c
 
+sed -i -e 's/^epicsShareFuncFDLIBM //g' "${SRC_DIR}/epics/extensions/src/SDDS/include"/*.h
+
 # Sorry, we're not going to build the motif driver.
 echo -e "all:\ninstall:\nclean:\n" > "${SRC_DIR}/epics/extensions/src/SDDS/SDDSaps/sddsplots/motifDriver/Makefile"
+  
+echo "* Setting up EPICS build system"
+make -C "${SRC_DIR}/epics/base"
 
-
+echo "* Patching SDDS utils"
 echo "* Building SDDS"
 # First, build some non-MPI things (otherwise we don't get editstring, nlpp)
 make -C "${SRC_DIR}/epics/extensions/src/SDDS" "${MAKE_ALL_ARGS[@]}"
@@ -136,8 +159,6 @@ make -C "${SRC_DIR}/epics/extensions/src/SDDS/SDDSlib" "${MAKE_MPI_ARGS[@]}" "${
 
 echo "* Building SDDS tools"
 make -C "${SRC_DIR}/oag/apps/src/utils/tools" "${MAKE_MPI_ARGS[@]}"
-
-sed -i -e 's/^epicsShareFuncFDLIBM //g' "${SRC_DIR}/epics/extensions/src/SDDS/include"/*.h
 
 # We may not *need* to build these individually. However these are the bare
 # minimum necessary for Pelegant. So let's go with it for now.
@@ -162,7 +183,7 @@ echo "* Building Pelegant"
 echo "* Adding extension bin directory to PATH for nlpp"
 export PATH="${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}:$PATH"
 
-ELEGANT_ROOT="${SRC_DIR}/oag/apps/src/elegant/"
+ELEGANT_ROOT="${SRC_DIR}/oag/apps/src/elegant"
 
 if [[ $(uname -s) == 'Linux' ]]; then
   # Include libgomp for Linux builds for the remainder of the tools
