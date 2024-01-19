@@ -47,6 +47,8 @@ else
   echo -e "\n\nNot mangling homebrew as we are not running in CI"
 fi
 
+git config --global --add safe.directory /home/conda/feedstock_root
+
 if [[ "${sha:-}" == "" ]]; then
   sha=$(git rev-parse HEAD)
 fi

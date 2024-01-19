@@ -40,3 +40,67 @@ zlib:
 - '1.2'
 zstd:
 - '1.5'
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.HakgnHUNTy/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.kp7vhBOGeo/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.uiB6eCSYqi/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.2XIzBgjoKi/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.Zm1Q9W2t5o/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.7tPVlJupMx/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.ZFB1kFnsKU/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.4pyFUdT2s5/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.1XlhjUdI1f/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.voFSnWzKGb/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.wHMVbET68Z/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.2Gymz4SyYw/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.2PUaOtdxwi/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.K5ZDICN1wb/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.roGntbNqK4/MacOSX11.0.sdk
+
+
+CONDA_BUILD_SYSROOT:
+- /var/folders/vy/s8_hc3m10fddm6n_43cf_m8r0000gn/T/tmp.k0qW2w9glr/MacOSX11.0.sdk
+
