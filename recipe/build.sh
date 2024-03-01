@@ -49,15 +49,11 @@ MAKE_MPI_ARGS=(
   "MPICH_CXX=$CXX"
 )
 
-PYTHON_PREFIX=$($PYTHON -c "import sys; print(sys.prefix)")
-PYTHON_EXEC_PREFIX=$($PYTHON -c "import sys; print(sys.exec_prefix)")
-PYTHON_VERSION=$($PYTHON -c "import sys; print(sys.version[:4])")
+PYTHON_VERSION="$PY_VER"
 
 echo "* Make args:          ${MAKE_ALL_ARGS[*]}"
 echo "* Make GSL args:      ${MAKE_GSL_ARGS[*]}"
 echo "* Make MPI args:      ${MAKE_MPI_ARGS[*]}"
-echo "* Python prefix:      $PYTHON_PREFIX"
-echo "* Python exec prefix: $PYTHON_EXEC_PREFIX"
 echo "* Python version:     $PYTHON_VERSION"
 
 echo "* Setting compilers for epics-base"
@@ -171,9 +167,9 @@ echo "* Building SDDS python"
 make -C "${SRC_DIR}/epics/extensions/src/SDDS/python" \
   "${MAKE_MPI_ARGS[@]}" \
   PYTHON3=1 \
-  PYTHON_PREFIX="$PYTHON_PREFIX" \
-  PYTHON_EXEC_PREFIX="$PYTHON_EXEC_PREFIX" \
-  PYTHON_VERSION="$PYTHON_VERSION"
+  PYTHON_PREFIX="$CONDA_PREFIX" \
+  PYTHON_EXEC_PREFIX="$CONDA_PREFIX" \
+  PYTHON_VERSION="$PY_VER"
 
 echo "* Building Pelegant"
 
@@ -223,7 +219,7 @@ chmod +w "${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/"*
 chmod +w "${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}/"*
 chmod +w "${SRC_DIR}/epics/extensions/lib/${EPICS_HOST_ARCH}/"*
 
-SITE_PACKAGES_DIR=$($PYTHON -c "import site; print(site.getsitepackages()[0])")
+SITE_PACKAGES_DIR="$CONDA_PREFIX/lib/python${PY_VER}/site-packages"
 
 echo "* Installing sdds library to $SITE_PACKAGES_DIR"
 cp "${SRC_DIR}/epics/extensions/src/SDDS/python/sdds.py" "$SITE_PACKAGES_DIR"
