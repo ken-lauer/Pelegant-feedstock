@@ -88,6 +88,8 @@ test:
   commands:
     - which Pelegant
     - Pelegant
+    - which elegant
+    - elegant
     # These are skipped on macOS at the moment - sddscontour:
     - which sddscontour  # [linux]
     - which sddscongen  # [linux]
