@@ -12,7 +12,7 @@ jobs:
             architecture: x86_64
             artifactpath: osx-64
             target: osx_64_python3.10.____cpython
-            xcode_version: 13.2.1
+            xcode_version: 15.0.1
           # - os: macos-latest-large
           #   architecture: x86_64
           #   artifactpath: osx-64
@@ -60,11 +60,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install conda build requirements
-        shell: bash -l {0}
+      - name: Check for Xcode versions
         run: |
-          ls -l /Applications
-          exit 1
+          ls -l /Applications || echo "This is Linux"
 
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v3
