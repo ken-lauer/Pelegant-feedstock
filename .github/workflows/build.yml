@@ -1,4 +1,4 @@
-name: build
+name: Build
 
 on:
   push:
@@ -8,15 +8,36 @@ jobs:
     strategy:
       matrix:
         include:
-          # - os: macos-latest-large
-          #   architecture: x86_64
-          # - os: macos-latest-xlarge
-          #   architecture: arm64
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-64
+            target: osx_64_python3.10.____cpython
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-64
+            target: osx_64_python3.11.____cpython
+
+          - os: macos-latest-xlarge
+            architecture: arm64
+            artifactpath: osx-arm64
+            target: osx_arm64_python3.10.____cpython
+          - os: macos-latest-xlarge
+            architecture: arm64
+            artifactpath: osx-arm64
+            target: osx_arm64_python3.11.____cpython
+
           - os: ubuntu-latest
             architecture: x86_64
+            artifactpath: linux-64
+            target: linux_64_python3.10.____cpython
+          - os: ubuntu-latest
+            architecture: x86_64
+            artifactpath: linux-64
+            target: linux_64_python3.11.____cpython
           # - os: windows-latest
           #   architecture: osx-64
 
+    name: ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     steps:
@@ -39,15 +60,15 @@ jobs:
         run: |
           mamba install -y conda-build 
 
-      - name: Build for Python 3.10
+      - name: Build ${{ matrix.target }}
         shell: bash -l {0}
-        run: python build-locally.py linux_64_python3.10.____cpython
+        run: python build-locally.py ${{ matrix.target }}
 
-      - name: Build for Python 3.11
+      - name: Explore build-artifacts ${{ matrix.target }}
         shell: bash -l {0}
-        run: python build-locally.py linux_64_python3.11.____cpython
+        run: find build_artifacts
 
       - uses: actions/upload-artifact@v4
         with:
           name: Pelegant-${{ matrix.os }}-${{ matrix.architecture }}-binaries
-          path: build_artifacts/linux-64/*.conda
+          path: build_artifacts/${{ matrix.artifactpath }}/*.conda
