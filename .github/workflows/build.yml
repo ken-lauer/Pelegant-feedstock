@@ -95,6 +95,8 @@ jobs:
 
       - name: Upload build_artifacts
         shell: bash -l {0}
+        env:
+          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           if [ -d "build_artifacts" ]; then
             find "build_artifacts/${{ matrix.artifactpath }}/" -name "*.conda" \
@@ -103,6 +105,8 @@ jobs:
 
       - name: Upload conda-bld artifacts
         shell: bash -l {0}
+        env:
+          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           if [ -d "miniforge3" ]; then
             find "miniforge3/conda-bld/${{ matrix.artifactpath }}/" -name "*.conda" \
