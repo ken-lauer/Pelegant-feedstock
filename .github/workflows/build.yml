@@ -61,7 +61,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -78,17 +78,24 @@ jobs:
       - name: Install conda build requirements
         shell: bash -l {0}
         run: |
-          mamba install -y conda-build 
+          mamba install -y conda-build anaconda-client
 
       - name: Build ${{ matrix.target }}
         shell: bash -l {0}
         run: python build-locally.py ${{ matrix.target }}
 
-      - name: Explore build-artifacts ${{ matrix.target }}
+      - name: Find build-artifacts
         shell: bash -l {0}
-        run: find build_artifacts
+        run: find . -name "*.conda"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Pelegant-${{ matrix.os }}-${{ matrix.architecture }}-binaries
+          name: Pelegant-${{ matrix.target }}-conda
           path: build_artifacts/${{ matrix.artifactpath }}/*.conda
+          if-no-files-found: warn
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pelegant-${{ matrix.target }}-conda
+          path: miniforge3/conda-bld/${{ matrix.artifactpath }}/*.conda
+          if-no-files-found: warn
