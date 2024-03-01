@@ -189,9 +189,15 @@ USR_LDFLAGS+= -lgomp
 EOF
 fi
 
+echo "* Building parallel elegant first"
 make -C "${ELEGANT_ROOT}" \
   Pelegant \
   "${MAKE_MPI_ARGS[@]}" \
+  "${MAKE_GSL_ARGS[@]}"
+
+echo "* Building regular elegant second"
+make -C "${ELEGANT_ROOT}" \
+  MPI=0 NOMPI=1 \
   "${MAKE_GSL_ARGS[@]}"
 
 for build_path in \
