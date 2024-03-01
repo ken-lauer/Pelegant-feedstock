@@ -167,8 +167,8 @@ echo "* Building SDDS python"
 make -C "${SRC_DIR}/epics/extensions/src/SDDS/python" \
   "${MAKE_MPI_ARGS[@]}" \
   PYTHON3=1 \
-  PYTHON_PREFIX="$CONDA_PREFIX" \
-  PYTHON_EXEC_PREFIX="$CONDA_PREFIX" \
+  PYTHON_PREFIX="$PREFIX" \
+  PYTHON_EXEC_PREFIX="$PREFIX" \
   PYTHON_VERSION="$PY_VER"
 
 echo "* Building Pelegant"
@@ -219,7 +219,7 @@ chmod +w "${SRC_DIR}/oag/apps/bin/${EPICS_HOST_ARCH}/"*
 chmod +w "${SRC_DIR}/epics/extensions/bin/${EPICS_HOST_ARCH}/"*
 chmod +w "${SRC_DIR}/epics/extensions/lib/${EPICS_HOST_ARCH}/"*
 
-SITE_PACKAGES_DIR="$CONDA_PREFIX/lib/python${PY_VER}/site-packages"
+SITE_PACKAGES_DIR="$PREFIX/lib/python${PY_VER}/site-packages"
 
 echo "* Installing sdds library to $SITE_PACKAGES_DIR"
 cp "${SRC_DIR}/epics/extensions/src/SDDS/python/sdds.py" "$SITE_PACKAGES_DIR"
