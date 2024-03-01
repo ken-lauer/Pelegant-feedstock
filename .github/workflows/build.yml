@@ -13,42 +13,48 @@ jobs:
             artifactpath: osx-64
             target: osx_64_python3.10.____cpython
             xcode_version: 15.0.1
-          # - os: macos-latest-large
-          #   architecture: x86_64
-          #   artifactpath: osx-64
-          #   target: osx_64_python3.11.____cpython
-          # - os: macos-latest-large
-          #   architecture: x86_64
-          #   artifactpath: osx-64
-          #   target: osx_64_python3.12.____cpython
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-64
+            target: osx_64_python3.11.____cpython
+            xcode_version: 15.0.1
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-64
+            target: osx_64_python3.12.____cpython
+            xcode_version: 15.0.1
 
           - os: macos-latest-xlarge
             architecture: arm64
             artifactpath: osx-arm64
             target: osx_arm64_python3.10.____cpython
             xcode_version: 13.2.1
-          # - os: macos-latest-large
-          #   architecture: x86_64
-          #   artifactpath: osx-arm64
-          #   target: osx_arm64_python3.11.____cpython
-          # - os: macos-latest-large
-          #   architecture: x86_64
-          #   artifactpath: osx-arm64
-          #   target: osx_arm64_python3.12.____cpython
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-arm64
+            target: osx_arm64_python3.11.____cpython
+            xcode_version: 13.2.1
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-arm64
+            target: osx_arm64_python3.12.____cpython
+            xcode_version: 13.2.1
 
           - os: ubuntu-latest
             architecture: x86_64
             artifactpath: linux-64
             target: linux_64_python3.10.____cpython
             xcode_version:
-          # - os: ubuntu-latest
-          #   architecture: x86_64
-          #   artifactpath: linux-64
-          #   target: linux_64_python3.11.____cpython
-          # - os: ubuntu-latest
-          #   architecture: x86_64
-          #   artifactpath: linux-64
-          #   target: linux_64_python3.12.____cpython
+          - os: ubuntu-latest
+            architecture: x86_64
+            artifactpath: linux-64
+            target: linux_64_python3.11.____cpython
+            xcode_version:
+          - os: ubuntu-latest
+            architecture: x86_64
+            artifactpath: linux-64
+            target: linux_64_python3.12.____cpython
+            xcode_version:
 
     name: ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
@@ -86,6 +92,22 @@ jobs:
       - name: Find build-artifacts
         shell: bash -l {0}
         run: find . -name "*.conda"
+
+      - name: Upload build_artifacts
+        shell: bash -l {0}
+        run: |
+          if [ -d "build_artifacts" ]; then
+            find "build_artifacts/${{ matrix.artifactpath }}/" -name "*.conda" \
+                -exec anaconda -t "$ANACONDA_TOKEN" upload "{}" \;
+          fi
+
+      - name: Upload conda-bld artifacts
+        shell: bash -l {0}
+        run: |
+          if [ -d "miniforge3" ]; then
+            find "miniforge3/conda-bld/${{ matrix.artifactpath }}/" -name "*.conda" \
+                -exec anaconda -t "$ANACONDA_TOKEN" upload "{}" \;
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
