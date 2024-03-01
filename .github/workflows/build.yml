@@ -60,6 +60,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install conda build requirements
+        shell: bash -l {0}
+        run: |
+          ls -l /Applications
+          exit 1
+
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v3
         with:
