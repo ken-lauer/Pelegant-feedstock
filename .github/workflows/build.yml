@@ -16,15 +16,31 @@ jobs:
             architecture: x86_64
             artifactpath: osx-64
             target: osx_64_python3.11.____cpython
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-64
+            target: osx_64_python3.12.____cpython
 
-          - os: macos-latest-xlarge
-            architecture: arm64
+          # We can't use macos-latest-xlarge (M1/arm64) here, but because conda
+          # build scripts cross-compile to arm64 we should still be OK.
+          # Message: xcodebuild[19412:99289] [MT] DVTSDK: Skipped SDK
+          #          /Applications/Xcode_15.0.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk;
+          #          its version (11.0) is below required minimum (13.0) for the macosx
+          #          platform.
+          # - os: macos-latest-xlarge
+          #   architecture: arm64
+          - os: macos-latest-large
+            architecture: x86_64
             artifactpath: osx-arm64
             target: osx_arm64_python3.10.____cpython
-          - os: macos-latest-xlarge
-            architecture: arm64
+          - os: macos-latest-large
+            architecture: x86_64
             artifactpath: osx-arm64
             target: osx_arm64_python3.11.____cpython
+          - os: macos-latest-large
+            architecture: x86_64
+            artifactpath: osx-arm64
+            target: osx_arm64_python3.12.____cpython
 
           - os: ubuntu-latest
             architecture: x86_64
@@ -34,6 +50,10 @@ jobs:
             architecture: x86_64
             artifactpath: linux-64
             target: linux_64_python3.11.____cpython
+          - os: ubuntu-latest
+            architecture: x86_64
+            artifactpath: linux-64
+            target: linux_64_python3.12.____cpython
           # - os: windows-latest
           #   architecture: osx-64
 
