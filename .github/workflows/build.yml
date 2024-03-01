@@ -1,0 +1,53 @@
+name: build
+
+on:
+  push:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          # - os: macos-latest-large
+          #   architecture: x86_64
+          # - os: macos-latest-xlarge
+          #   architecture: arm64
+          - os: ubuntu-latest
+            architecture: x86_64
+          # - os: windows-latest
+          #   architecture: osx-64
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Mambaforge
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: pelegant
+          architecture: ${{ matrix.architecture }}
+          channels: conda-forge
+          miniconda-version: latest
+          miniforge-variant: Mambaforge
+          use-mamba: true
+
+      - name: Install conda build requirements
+        shell: bash -l {0}
+        run: |
+          mamba install -y conda-build 
+
+      - name: Build for Python 3.10
+        shell: bash -l {0}
+        run: python build-locally.py linux_64_python3.10.____cpython
+
+      - name: Build for Python 3.11
+        shell: bash -l {0}
+        run: python build-locally.py linux_64_python3.11.____cpython
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pelegant-${{ matrix.os }}-${{ matrix.architecture }}-binaries
+          path: build_artifacts/linux-64/*.conda
