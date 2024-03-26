@@ -2,6 +2,10 @@ name: Build
 
 on:
   push:
+  pull_request:
+  release:
+    types:
+      - created
 
 jobs:
   build:
@@ -94,6 +98,7 @@ jobs:
         run: find . -name "*.conda"
 
       - name: Upload build_artifacts
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         shell: bash -l {0}
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
@@ -104,6 +109,7 @@ jobs:
           fi
 
       - name: Upload conda-bld artifacts
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         shell: bash -l {0}
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
