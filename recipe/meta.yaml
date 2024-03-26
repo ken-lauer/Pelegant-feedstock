@@ -9,12 +9,12 @@ source:
   - url: https://ops.aps.anl.gov/downloads/elegant.{{ version }}.tar.gz
     sha256: 22c43e81c172258783073cd84b9b498a60288d26492f8e1c056c17bc6b207ff0
     folder: src/elegant
+  - url: https://ops.aps.anl.gov/downloads/SDDS.5.6.tar.gz
+    sha256: 9147af19b4a3e7e0f57c567015d1805095ef5c5e7ec285b6d45be2dd3ace60cc
+    folder: src/sdds
   - url: https://ops.aps.anl.gov/downloads/oag.apps.configure.tar.gz
     sha256: eef0912a70b069e55d1df24cd008f42e6a5923e35461f2b69f92cd1e7e2d4596
     folder: src/oag-apps
-  - url: https://ops.aps.anl.gov/downloads/SDDS.5.5.tar.gz
-    sha256: c07823e10ba75bea4d6277a2cddf126f366e4ea563fea3967dd8268c7a13be2a
-    folder: src/sdds
   - url: https://ops.aps.anl.gov/downloads/epics.base.configure.tar.gz
     sha256: d18a5a1dd58ab485df32a55a32f0f2a7517b6a5361439208dc38d2fe69f6e22e
     folder: src/epics-base
