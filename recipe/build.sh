@@ -169,7 +169,8 @@ make -C "${SRC_DIR}/epics/extensions/src/SDDS/python" \
   PYTHON3=1 \
   PYTHON_PREFIX="$PREFIX" \
   PYTHON_EXEC_PREFIX="$PREFIX" \
-  PYTHON_VERSION="$PY_VER"
+  PYTHON_VERSION="$PY_VER" \
+  LIB_LIBS="rpnlib SDDS1 mdblib mdbmth lzma"
 
 echo "* Building Pelegant"
 
